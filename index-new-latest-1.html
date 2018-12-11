@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!-- saved from url=(0086)file:///C:/Users/hp/Downloads/Microsoft.SkypeApp_kzf8qxf38zg5c!App/All/editorMine.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>WYSIWYG Editor</title>
+<!--font awesome icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+     <style>
+           #textEditor
+           {
+             margin:0 auto;
+             width: 750px;
+             height:300px;
+             /*border: 2px solid grey; */
+           }
+
+           #theRibbion
+           {
+             border-bottom: none;
+             padding: 8px;
+             background-color: #708090;
+             color:white;
+             border-radius: 8px 8px 0px 0px;
+             margin-left:-3px;
+           }
+
+           #richTextArea
+           {
+             border: 2px solid #708090;
+             height:100%;
+             width:749px;
+            /*  margin-left: 383px;*/
+			      margin-left:auto;
+			      margin-right:auto;
+            margin-top: -263px;
+           /*  overflow-y: auto; */
+		   background-color: beige;
+           }
+
+          iframe#theWYSIWYG
+          {
+            height: 100%;
+            width:100%;
+          }
+
+         div#theRibbion > button
+         {
+           color: white;
+           border: none;
+           outline:none;
+           background-color: transparent;
+           cursor:pointer;
+         }
+
+         div#theRibbion > button:hover
+         {
+           background-color: rgb(169,169,169);
+           transition: all 0.3s linear 0s;
+         }
+
+         #previewArea
+         {
+           border:solid 2px #708090;
+           width:746px;
+           height:250px;
+           margin-left:auto;
+		       margin-right:auto;
+		       background-color: beige;
+
+		   
+         }
+      </style>
+</head>
+<body>
+  <div id="textEditor">
+       <div id="theRibbion">
+            <button id="boldButton" title="Bold"><b><i class="fa fa-bold" aria-hidden="true"></i></b></button>
+            <button id="italicButton" title="Italic"><em><i class="fa fa-italic"></i></em></button>
+            <button id="UnderlineButton" title="Underline"><u><i class="fa fa-underline"></i></u></button>
+            <select id="fontChanger">
+                 <option value="Times New Roman" style="font-family: &quot;Times New Roman&quot;;">Times New Roman</option>
+                 <option value="Consolas" style="font-family: Consolas;">Consolas</option>
+                 <option value="Tahoma" style="font-family: Tahoma;">Tahoma</option>
+                 <option value="Calibri" style="font-family: Calibri;">Calibri</option>
+            </select>
+
+           <!--Link Button -->
+           <button id="linkButton" title="Create link"> <i class="fa fa-link"></i></button>
+           <button id="unlinkButton" title="Remove the link"><i class="fa fa-unlink"></i></button>
+            <!-- Emojis-->
+           <select id="emoji" onchange="appendEmojiToText()">
+                <option value="🙂">🙂</option>
+               <option value="😀">😀</option>
+               <option value="😛">😛</option>
+               <option value="😋">😋</option>
+               <option value="🙃">🙃</option>
+           </select>
+
+          <button id="save" type="submit" id="submit" title="Save" value="Submit" style="float:right;"><i class="fa fa-save"></i></button>
+          <button id="edit" type="submit" id="submit" value="Submit" title="Edit" style="float:right;"><i class="fa fa-edit"></i></button>
+          <!-- Eye Preview Icon -->
+          <button id="Preview" title="Preview" style="float:right;"><i class="fa fa-eye"></i></button>
+       </div>
+  </div>
+  <div id="richTextArea">
+      <div id="notepad" class="previewEditable" style="height:250px ;" contenteditable="true">
+        </div>
+
+		<!--Drag And Drop -->
+		<div id="dropArea" style=" border: 2px solid #708090; border-left:none;border-right:none; border-bottom:none; height: 100%; width: 749px; overflow-y: auto;">
+ <h3>Image File</h3>
+   </div>
+      </div>
+<br>
+<br>
+<!--Preview Area -->
+
+<h2 style="text-align:center;">Preview</h2>
+<div id="previewArea">
+</div>
+<script>
+
+//Code to save all of it
+window.addEventListener("load",function()
+{
+  save.addEventListener('click', function(e){
+    localStorage.setItem("editorContent", document.getElementById('richTextArea').innerHTML);
+    //Empty the editorContent and image 
+    document.getElementById('notepad').innerHTML = "";
+
+    //Empty Preview Area
+    document.getElementById('previewArea').innerHTML = "";
+
+    var images = document.getElementsByTagName('img');
+    var l = images.length;
+    for (var i = 0; i < l; i++) {
+        images[0].parentNode.removeChild(images[0]);
+    }
+  }, false);
+
+  //Code to Preview all of it
+  Preview.addEventListener("click", function(e)
+  {
+    let previewElement = document.getElementById('previewArea');
+    previewElement.style.height = '100%';    
+
+    previewElement.innerHTML = localStorage.getItem('editorContent');    
+
+    //Remove attribute contentEditable
+    document.getElementsByClassName('previewEditable')[1].removeAttribute('contenteditable');
+  },false);
+
+  //Code to Preview all of it
+  edit.addEventListener("click", function(e)
+  {
+    //Empty Preview Area
+    document.getElementById('previewArea').innerHTML = "";
+
+    document.getElementById('richTextArea').innerHTML = localStorage.getItem('editorContent');    
+  },false);  
+}, false);
+
+
+var appendEmojiToText = function(){
+    document.getElementById('notepad').append(document.getElementById('emoji')[document.getElementById('emoji').selectedIndex].value)
+  }
+  //For dropping image file
+ let dropArea = document.getElementById("dropArea")
+
+// Prevent default drag behaviors
+;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  dropArea.addEventListener(eventName, preventDefaults, false)
+  document.body.addEventListener(eventName, preventDefaults, false)
+})
+
+// Handle dropped files
+dropArea.addEventListener('drop', handleDrop, false)
+
+function preventDefaults (e) {
+  e.preventDefault()
+  e.stopPropagation()
+}
+
+function handleDrop(e) {
+  var dt = e.dataTransfer
+  var files = dt.files
+
+ handleFiles(files)
+}
+
+function handleFiles(files) {
+  files = [...files]
+  files.forEach(previewFile)
+}
+
+function previewFile(file) {
+  let reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onloadend = function() {
+  //Set in localstorage
+  localStorage.setItem("imgSrc", reader.result);
+
+  //Set uploaded image
+    let img = document.createElement('img')
+    img.src = reader.result
+    document.getElementById('dropArea').appendChild(img)
+
+  }
+}
+
+//Rest of the code
+  /*Bold */
+ boldButton.addEventListener("click", function(e)
+ {
+   e.preventDefault();
+   document.execCommand("Bold",false, null);
+ },false);
+
+ /*  Italic*/
+
+ italicButton.addEventListener("click", function(e)
+ {
+  e.preventDefault();
+  document.execCommand("Italic",false, null);
+ },false);
+
+/*Underline */
+ UnderlineButton.addEventListener("click", function(e)
+ {
+  e.preventDefault();
+  document.execCommand("Underline",false, null);
+ },false);
+
+/*fontChanger */
+  fontChanger.addEventListener("change", function(event)
+  {
+    event.preventDefault();
+    document.execCommand("FontName" , false , event.target.value);
+  },false);
+
+  
+
+   /*linkButton */
+  linkButton.addEventListener("click", function()
+  {
+        var url = prompt("Enter a URL", "http//");
+        console.log(url);
+        document.execCommand("Createlink", false, url);
+  },false);
+
+  /*Unlink Button */
+  unlinkButton.addEventListener("click", function()
+  {
+   document.execCommand("Unlink", false, null);
+  }, false);
+
+   </script>
+ </body>
+  </html>
